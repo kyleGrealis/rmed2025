@@ -1,0 +1,339 @@
+---
+format: html
+---
+
+## CREATING A PACKAGE WITH `rUM`
+
++ installing `rUM` installs other dependency packages, if you don't have them:
+  - `tidymodels` ecosystem
+  - `patchwork` & other plotting packages
+  - R package-building packages (ie, `pkgbuild`, `pkgload`)
+
++ configure your Rprofile with your author details:
+```r
+usethis::edit_r_profile()
+```
+  - add content like this and save
+```r
+options(
+  usethis.full_name = 'Kyle Grealis',
+  usethis.description = list(
+    `Authors@R` = 'person(
+      given = "Kyle",
+      family = "Grealis",
+      role = c("aut", "cre"),
+      email = "kylegrealis@miami.edu",
+      comment = c(ORCID = "0000-0002-9223-8854")
+    )'
+  )
+)
+```
+  - restart your session to apply the changes
+
++ initialize a `rUM` package project with example code:
+```r
+rUM::make_package(".", example = TRUE)
+```
+  - if you are currently in a R project & it contains a `*.Rproj` file, use:
+```r
+rUM::make_package(".", example = TRUE, overwrite = TRUE)
+```
+  - confirm to "create anyway"
+  - confirm to overwrite pre-existing `*.Rproj` file
+  - you will get user feedback about the files `rUM` creates to initialize the new package project
+  - accept to quit the current R session
+
++ the new `rUM` package project initializes with:
+  - enhanced .gitignore file (give details)
+  - .Rbuildignore
+  - `data` directory
+  - dated_progress_notes.md
+  - DESCRIPTION & NAMESPACE files
+  - `R` directory
+  - `rUM` `README.md` template
+  - `vignettes` directory
+
++ add a license
+```r
+# Choose from one of the available licenses:
+usethis::use_*_license()
+
+# Option: use a proprietary license & add your name
+usethis::use_proprietary_license("Kyle Grealis")
+```
+
++ run a first check of the package structure:
+  - GUI tools: Build > Check
+  - console:
+  ```r
+  devtools::check()
+  ```
+  - if you get this message, ignore it for now:
+```r
+❯ checking for future file timestamps ... NOTE
+unable to verify current time
+```
+
++ edit the DESCRIPTION file:
+  - name the Package (line 1) but do not use spaces or underscores
+    * check if the package name is available and valid:
+
+```r
+>> available::valid_package_name("newPackage")
+Name valid: ✔
+>> available::valid_package_name("new.package")
+Name valid: ✔
+
+# Invalid name with underscore
+>> available::valid_package_name("new_package")
+Name valid: ✖
+# Invalid name with space
+>> available::valid_package_name("new package")
+Name valid: ✖
+```
+  - choose a title (one line, title case; line 2)
+  - edit the `Authors@R` section
+    * this may be auto-filled correctly if you have configured your .Rprofile
+    * if using mutiple authors, wrap all author details in `c()`:
+```r
+  c(
+    person(
+      given = "Kyle",
+      family = "Grealis",
+      role = c("aut", "cre"),
+      email = "kylegrealis@miami.edu",
+      comment = c(ORCID = "0000-0002-9223-8854")
+    ),
+    person(
+      given = "Raymond",
+      family = "Balise",
+      role = c("aut", "cre"),
+      email = "balise@miami.edu",
+      comment = c(ORCID = "0000-0002-9856-5901")
+    )
+  )
+```
+  - edit the Description section with one paragraph
+  - save the changes & re-`check()`
+
++ open the `vignettes` directory
+  - 4 files have been added for configuring & rendering citation content
+  - `analysis.qmd` will be the package vignette:
+    * lines 7-9 have been configured to use the proper VignetteBuilder named in DESCRIPTION
+    * edit the title (line 2) and must match VignetteIndexEntry (line 7):
+    * edit the author (line 3)
+    * do not include quotation marks on line 7
+
+```r
+2. title: "My Test Vignette"
+7.   %\VignetteIndexEntry{My Test Vignette}
+```
+
++ more info on `vignettes/analysis.qmd`:
+  - we have chosen to use Rmarkdown style code section labels even with Quarto vignettes
+    * this allows the code chunk to be collapsed in the editor and still display the chunk name
+  - using `conflicted` warns of namespace conflicts
+    * loaded with `rUM`
+    * example: attempting to use `filter()` while forgetting to load `tidyverse` (`library(tidyverse)`)
+  - the template is configured with journal-ready sections
+    * Abstract
+    * Introduction
+    * Methods
+    * Results
+  - when you initialized the project using `example = TRUE`, the `*.qmd` file will include:
+    * demo `mtcars` data set
+    * demo `gtsummary::tbl_summary()` of the `mtcars` data
+    * demo `ggplot()` empty output
+    * examples of how to create within-document cross-reference hyperlinks to tables & plots:
+      - `@tbl-table1` & `@fig-figure-1`
+      - provided descriptions for cross-referencing:
+```r
+#| tbl-cap: |
+#|   Your real caption belongs here.  Remember that cross references to tables 
+#|   use labels for the code chunk starting with tbl-.
+```
+
++ contrasting `make_project()` & `make_package()` with Quarto:
+  - Quarto vignettes were previously advised against using custom CSS files
+  - `make_project()` will add `custom.css` to the project's root directory
+  - we have not included SCSS yet for package vignettes
+  - recently revised info: https://cran.r-project.org/web/packages/quarto/vignettes/hello.html
+
++ enhanced tools for documenting datasets:
+  - add `mtcars.rda` to the data folder
+```r
+save(mtcars, file = "data/mtcars.rda")
+```
+  - begin documenting your dataset structure with `rUM::write_man()`:
+```r
+> rUM::write_man(mtcars)
+Documentation file created at R/mtcars.R
+```
+  - open `R/mtcars.R`:
+    * the documentation provides a template of your data structure
+      - number of rows & columns
+      - lists each column (variable) inside `\item{}`
+      - creates a Markdown-style table template with type & description fields
+    * modify `@description` (line 3)
+    * modify each variable description
+    * modify `@source` (next-to-last line)
+  - update the package documentation
+    * this process is the same as if you were adding a new function to your package
+    * GUI: Build > Document
+    * keyboard shortcut: Ctrl+Shift+D (CMD+Shift+D on Mac)
+    * console:
+```r
+devtools::document()
+ℹ Updating newPackage documentation
+ℹ Loading newPackage
+Writing mtcars.Rd
+```
+
++ build & install the package
+  - GUI: Build > Check, then Build > Install
+    * the session will restart and load your new package
+  - console:
+```r
+devtools::check()
+devtools::install(build_vignettes = TRUE)
+# restart the session & load the package
+library(newPackage)
+```
+  - navigate to Packages & search for "newPackage"
+  - click `mtcars` link to view updated dataset documentation:
+    * the documentation renders with formatted Markdown tables to neatly describe the data set structure
+
+
+---
+
+## CREATING SLIDES WITH `rUM`
+
++ create a RevealJS slideshow with the RMed template in your current project
+```r
+rUM::write_slides("rUM", template = "rmed2025")
+```
+  - you can add a `new_folder` name, but we default to using `new_folder = "slides"` to work with our other `rUM` functions (more later)
+  - creates a new `slides` directory with:
+    * `img` directory containing custom design features
+    * file for rendering code cells with the default RStudio light theme
+    * `slides.scss` for futher customizations
+  - modify the title & author details
+  - complete the URL (line 25) if you are sharing the slideshow or comment out
+  - the "rmed2025" template includes custom:
+    * backgrounds with images
+    * color schemes
+    * RMed hex logo in the bottom right corner once rendered
+    * RMed hex logo as the browser tab icon once rendered
++ add new slide sections with a level one header (ie, use one #):
+```r
+# New section
+```
++ add a new slide with a level two header (ie, use two #):
+```r
+## Another slide
+```
++ explore more slide options: https://quarto.org/docs/presentations/revealjs/
++ Emil Hveifeldt "Slidecraft: The Arto of Creating Pretty Presentations":
+  - https://www.youtube.com/watch?v=SAi8-P49F2Y
+  - Presented at the 2023 New York R Conference (July 13, 2023)
+
++ if you are using slides within your own package
+  - move the `slides` directory inside `inst` directory
+  - adding slides to `inst` using `rUM`
+```r
+# add one slide
+rUM::write_slides("rUM", path = "inst")
+# add multiple slides
+rUM::write_slides(c("one", "two"), path = "inst")
+```
+  - rebuild the package
+
+---
+
+# NEW FEATURES WITH `rUM`
+
+## Collaboration communication
+
++ update `dated_progress_notes.md` to keep track of project updates
++ update `README.md`:
+  - template was structured with academic & medical package-sharing in mind
+  - directions for other cloning the repository & how to create a reproducible environment based on your work
+  - best practices for further documenting project data files, scripts, and directory descriptions
+
+
++ we would like offer a new convention for adding slideshows to a package
+  - creating `inst/slides` so that users can find & display slides
+  - similar functionality to using vignettes, but reusable for presentations
++ find the names of the slideshows available in packages
+  - the package author needs to have added them to `inst/slides` first
+  - if you haven't, move your `slides` folder inside `inst`
+    * rebuild the package
+    * restart your session
+  - What slideshows are available in package `rUM`?
+```r
+> rUM::find_slides("rUM")
+[1] "rUM_the_package" "rUM_the_word"
+```
++ let's view "rUM_the_word" ("rUM_the_package" is this presentation for RMed)
+```r
+rUM::show_slides(package = "rUM", deck = "rUM_the_word")
+# or pipe from find to show, but specify the second returned deck
+rUM::find_slides("rUM")[2] |> rUM::show_slides(package = "rUM")
+```
+
++ add a `rUM`-style Quarto template file to an existing project
+  - this will create the file and open it in your editor
+```r
+rUM::write_quarto("data_cleaning")
+# Add the Quarto file to directory
+rUM::write_quarto("data_cleaning", path = "R")
+```
++ add SCSS file to existing project & get links to more information on how to use SCSS
+  - the file is added to the projet root (`here::here()`)
+
+```r
+rUM::write_scss()
+✔ Created custom.scss
+# Use a custom SCSS file name
+rUM::write_scss("my_custom")
+✔ Created my_custom.scss
+For more SCSS styling options, visit:
+- https://quarto.org/docs/output-formats/html-themes.html#customizing-themes
+- https://quarto.org/docs/output-formats/html-themes-more.html
+- https://github.com/twbs/bootstrap/blob/main/scss/_variables.scss
+```
+
++ add a progress notes file to an existing project
+  - will not overwrite an existing `dated_progress_notes.md` by accident
+```r
+rUM::write_notes()
+```
++ add a README template to an existing project
+```r
+> rUM::write_readme()
+A README.md has been found in the specified directory! Would you like to overwite with rUM's README?
+
+1: I agree
+2: Absolutely not
+3: Nope
+```
++ starting with `rUM` version 2.2.0, creating a new project will:
+  - provide user feedback as the project is initialized
+
+```r
+✔ analysis.qmd has been created.
+✔ Created custom.scss
+For more SCSS styling options, visit:
+- https://quarto.org/docs/output-formats/html-themes.html#customizing-themes
+- https://quarto.org/docs/output-formats/html-themes-more.html
+- https://github.com/twbs/bootstrap/blob/main/scss/_variables.scss
+✔ An enhanced .gitignore has been created.
+✔ A README.md template has been created.
+✔ A dated_progress_notes.md template has been created.
+```
+
+  - include these functions automatically:
+    * `write_quarto()`
+    * `write_scss()`
+    * `write_readme()`
+    * `write_notes()`
