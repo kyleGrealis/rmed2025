@@ -1,0 +1,741 @@
+---
+title: "Mix, Pour, Share: The rUM Cocktail for Biomedical Project Packaging"
+subtitle: "R Medicine 2025 Talk"
+author:
+  - name: "Kyle Grealis & Raymond Balise"
+    affiliation:
+      - "University of Miami, <br>Department of Public Health Sciences, <br>Division of Biostatistics and Bioinformatics"
+date: last-modified
+date-format: "MMMM D, YYYY"
+format:
+  revealjs:
+    theme: 
+      - default
+      - slides.scss
+    title-slide-attributes:
+      data-background-image: "img/rmed_background.png"
+      data-background-size: cover
+      data-background-opacity: "50"
+    fontsize: 2em
+    html-math-method: mathjax
+    slide-number: c/t
+    show-slide-number: all
+    highlight-style: img/rstudio_default-light.theme
+    logo: "img/rmed.png"
+    footer: "[rUM Slides](https://github.com/kyleGrealis/rmed2025){target='_blank'}"
+    include-after-body: "img/clean_title_page.html"
+include-in-header:
+  text: |
+    <link rel="shortcut icon" href="img/rmed.ico"/>
+embed-resources: true
+knitr:
+  opts_chunk:      ########## set global options ############
+    collapse: true # keep code from blocks together (if shown)
+    echo: false    # don't show code
+    message: true  # show messages
+    warning: true  # show warnings
+    error: true    # show error messages
+    comment: ""    # don't show ## with printed output
+    R.options:   
+      digits: 3    # round to three digits
+editor_options:
+  chunk_output_type: console
+editor: source
+highlight-style: rstudio_default-light.theme
+---
+
+ 
+# What is rum & {rUM}?
+
+## Rum the Noun
+
+_Noun_
+
+- 1: [an alcoholic beverage distilled from a fermented cane product (such as molasses)]{.red}
+- 2: [alcoholic liquor]{.red}
+
+> the demon rum
+
+::: {.footer}
+<https://www.merriam-webster.com/dictionary/rum>
+:::
+
+
+## Rum the Adjective
+
+_Adjective_
+
+rummer; rummest
+
+:::{.fragment}
+1. British, informal + somewhat old-fashioned: [strange, odd]{.red}
+
+> Now writing is rum trade and eyes are rum things, and what is all right one day is all wrong the next.
+> —Angela Thirkell
+:::
+
+:::{.fragment}
+2. British, informal + somewhat old-fashioned: [difficult, dangerous]{.red}
+:::
+
+::: {.footer}
+<https://www.merriam-webster.com/dictionary/rum>
+:::
+
+## {rUM} the Package {.center}
+
+A R package from your friends at the University of Miami
+
+![](img/rUM-logo.png){fig-align="center" height="300"}
+
+::: {.footer}
+<https://raymondbalise.github.io/rUM/>
+:::
+
+
+## What {rUM} does
+
++ Choose RMarkdown or Quarto
++ Academic journal templates to help novices
++ One-line commands to build a package with a paper shell
++ One line commands to create Revealjs slide presentations with Quarto
+
+
+## The plan 
+
+:::{.incremental}
+- Reproducibility crisis
+- R Markdown/Quarto to the Rescue
+- What about other files?
+- Creating packages with rUM
+- Creating slides with rUM
+- New features with rUM version 2.2.0
+:::
+
+## Reproducibility crisis
+
+:::{.fragment}
+Do you see different results when you try to repeat the results from a paper using a new, independent sample?
+
+  - What could possibly go wrong?
+:::
+
+:::{.fragment .fade-in}
+Can you repeat the analyses in a published paper if you are given the data?
+:::
+
+:::{.fragment .fade-in}
+Can you repeat the analyses from your own paper with the original data?
+::: 
+
+::: {.fragment}
+**Replication**: Do you get [similar]{.orange} results on a new sample?
+
+**Reproducibility**: Do you get the [same]{.orange} results on the original sample?
+:::
+
+
+## RMarkdown & Quarto to the Rescue
+
++ Mix code and prose for the win
+
+:::{.fragment}
++ [Just add science!]{.orange}
+:::
+
+
+# Creating packages with {rUM}
+
+Installing {rUM} includes other dependency packages, if you don't have them
+
+:::{.incremental}
+  - `tidymodels` ecosystem
+  - `patchwork` & other plotting packages
+  - R package-building (i.e., `pkgbuild`, `pkgload`)
+:::
+
+
+## Setup
+
+Configure your Rprofile with your author details:
+```r
+usethis::edit_r_profile()
+```
+
+:::{.fragment}
+Add content like this and save
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "2, 5"
+options(
+  usethis.full_name = 'Kyle Grealis',
+  usethis.description = list(
+    `Authors@R` = 'person(
+      given = "Kyle",
+      family = "Grealis",
+      role = c("aut", "cre"),
+      email = "kylegrealis@miami.edu",
+      comment = c(ORCID = "0000-0002-9223-8854")
+    )'
+  )
+)
+```
+:::
+
+:::{.fragment}
+Restart your session to apply the changes
+:::
+
+## Setup Rprofile
+<div style="text-align: center;">
+  <video class="autoFullscreenVideo" style="width: 80vw; max-width: 800px; aspect-ratio: 21/9; position: absolute; bottom: 20%; left: 10%;" controls>
+    <source src="../snagit/setup-rprofile.mp4" type="video/mp4">
+    Setup Rprofile
+  </video>
+</div>
+
+
+
+## Initialize a {rUM} package project 
+
++ Create a packge that includes example code:
+
+:::{.fragment .fade-in-then-semi-out}
+```r
+rUM::make_package(".", example = TRUE)
+```
+:::
+
+:::{.fragment .fade-in}
++ If you are currently in a R project & it contains a `*.Rproj` file, use:
+```r
+rUM::make_package(".", example = TRUE, overwrite = TRUE)
+```
+:::
+
+:::{.fragment}
++ Confirm to "create anyway" & overwrite pre-existing `*.Rproj` file
++ You will get user feedback about the files {rUM} creates to initialize the new package project
++ Accept to quit the current R session
+:::
+
+:::{.fragment}
+:::{.callout-note title="A note about Positron"}
+Some confirmations may not appear in Positron, but the functionality is the same.
+:::
+:::
+
+## What you get
+
++ The new {rUM} package project initializes with:
+  - enhanced .gitignore file
+  - .Rbuildignore
+  - `data` directory
+  - dated_progress_notes.md
+  - DESCRIPTION & NAMESPACE files
+  - `R` directory
+  - {rUM} README template
+  - `vignettes` directory
+
+![](../snagit/package-files.png){.styled-image .absolute bottom="25%" right="0%" width="450"}
+
+## Continue with package setup
+
++ Add a license
+```{.r code-line-numbers="1,2|1,4,5"}
+# Choose from one of the available licenses:
+usethis::use_*_license()
+
+# Option: use a proprietary license & add your name
+usethis::use_proprietary_license("Kyle Grealis")
+```
+:::{.fragment}
+Run a first check of the package structure:  
+
+  - GUI tools: Build > Check
+  - Console:
+  ```r
+  devtools::check()
+  ```
+:::
+
+:::{.fragment}
+:::{.callout-note title="If you get this message, ignore it for now:"}
+```r
+❯ checking for future file timestamps ... NOTE
+unable to verify current time
+```
+:::
+:::
+
+
+# Almost finished
+
+## Edit the DESCRIPTION file (part 1)
+
+- Name the Package (line 1) but do not use spaces or underscores
+
+:::{.fragment}
+- Pro tip: Check if the package name is available and valid:
+
+```r
+>> available::valid_package_name("newPackage")
+Name valid: ✔
+>> available::valid_package_name("new.package")
+Name valid: ✔
+
+# Invalid name with underscore
+>> available::valid_package_name("new_package")
+Name valid: ✖
+# Invalid name with space
+>> available::valid_package_name("new package")
+Name valid: ✖
+```
+:::
+
+## Edit the DESCRIPTION file (part 2)
+
+- Choose a title (one line, title case; line 2)
+- Edit the `Authors@R` section
+  * this may be auto-filled correctly if you have configured your .Rprofile
+  * if using mutiple authors, wrap all author details in `c()`:
+
+```{.r code-line-numbers="|5,12"}
+c(
+  person(
+    given = "Kyle",
+    family = "Grealis",
+    role = c("aut", "cre"),
+    email = "kylegrealis@miami.edu",
+    comment = c(ORCID = "0000-0002-9223-8854")
+  ),
+  person(
+    given = "Raymond",
+    family = "Balise",
+    role = c("aut"),
+    email = "balise@miami.edu",
+    comment = c(ORCID = "0000-0002-9856-5901")
+  )
+)
+```
+
+## Edit the DESCRIPTION file (part 3)
+
+:::{.columns}
+
+:::{.column width="45%" .absolute bottom="35%"}
++ Edit the Description section with one paragraph
+
+:::{.fragment}
++ Save the changes & re-`check()`
+:::
+:::
+
+:::{.column}
+![](../snagit/description-original.png){.styled-image .absolute bottom="10%" right="-7%" width="600"}
+:::
+:::
+
+
+## Last step
+
++ Open the `vignettes` directory
+
+:::{.incremental}
+  - 4 files have been added for configuring & rendering citation content
+  - `analysis.qmd` will be the package vignette:
+    * Lines 7-9 have been configured to use the proper VignetteBuilder named in DESCRIPTION
+    * Edit the title (line 2). [This must match]{.orange} VignetteIndexEntry (line 7):
+    * Edit the author (line 3)
+    * Do not include quotation marks on line 7
+:::
+
+:::{.fragment}
+```r
+2. title: "My Test Vignette"
+7.   %\VignetteIndexEntry{My Test Vignette}
+```
+:::
+
+# What about the vignette?
+
+## More info on `vignettes/analysis.qmd`
+
+:::{.incremental}
+- We have chosen to use Rmarkdown style code section labels even with Quarto vignettes
+- Using `conflicted` warns of namespace conflicts
+- The template is configured with journal-ready sections
+  * Abstract
+  * Introduction
+  * Methods
+  * Results
+:::
+
+## Vignette with `example = TRUE`
+
+- When you initialized the project using `example = TRUE`, the `*.qmd` file will include:
+  * Demo `mtcars` data set
+  * Demo `gtsummary::tbl_summary()` of the `mtcars` data
+  * Demo `ggplot()` object
+  * Examples of creating within-document cross-reference hyperlinks to tables & plots:
+    - `@tbl-table1` & `@fig-figure-1`
+    - provided descriptions for cross-referencing:
+```r
+#| tbl-cap: |
+#|   Your real caption belongs here.  Remember that cross references to tables 
+#|   use labels for the code chunk starting with tbl-.
+```
+
+
+## Make a package
+<div style="text-align: center;">
+  <video class="autoFullscreenVideo" style="width: 80vw; max-width: 800px; aspect-ratio: 21/9; position: absolute; bottom: 20%; left: 10%;" controls>
+    <source src="../snagit/make-package.mp4" type="video/mp4">
+    Make a package
+  </video>
+</div>
+
+
+##
+![](../snagit/vignette-preview.png){.styled-image .absolute bottom="3%" left="7%"}
+
+
+# What does `make_project()` do?  
+
++ Make a project with the structured `analysis.qmd` (or `.Rmd`) file
+
+:::{.fragment}
++ [All you need to add is SCIENCE]{.orange} 😁
+:::
+
+
+## Contrasting `make_project()` & `make_package()` with Quarto {.center}
+
++ Quarto vignettes were previously advised against using custom CSS files
++ `make_project()` will add `custom.scss` to the project's root directory
++ Check out the [recently revised info](https://cran.r-project.org/web/packages/quarto/vignettes/hello.html){target="_blank"} about modifying vignettes with SCSS
+
+ 
+# What about other types of package files?
+
+::: {.incremental}
++ Where does my package data go?
++ `write_man()` - write a pretty manual page for a dataset
+:::
+
+
+## Documenting datasets
+
+:::{.fragment}
++ Add [`medicaldata::laryngoscope`](https://cran.r-project.org/web/packages/medicaldata/medicaldata.pdf) to the data folder
+:::
+
+:::{.fragment}
+```{.r code-line-numbers="1|"}
+library(medicaldata)
+usethis::use_data(laryngoscope)
+✔ Setting active project to "/cloud/project".
+✔ Adding R to Depends field in DESCRIPTION.
+✔ Setting LazyData to "true" in DESCRIPTION.
+✔ Saving "laryngoscope" to "data/laryngoscope.rda".
+☐ Document your data (see <https://r-pkgs.org/data.html>).
+```
+:::
+
+:::{.fragment}
++ Begin documenting your dataset structure with `rUM::write_man()`:
+```r
+> rUM::write_man(laryngoscope)
+Documentation file created at R/laryngoscope.R
+```
+:::
+
+
+## Complete the documentation
+
+- open `R/laryngoscope.R`:
+  * The documentation provides a Markdown-style template of your data structure
+  * Modify `@description` (line 3)
+  * Modify each variable description
+  * Modify `@source` (next-to-last line)
+
+![](../snagit/write-man-original.png){.styled-image .absolute bottom="10%" right="0%" width="450"}
+
+## 
+- Update the package documentation
+  * This process is the same as if you were adding a new function to your package
+  * GUI: Build > Document
+  * Keyboard shortcut: Ctrl+Shift+D (CMD+Shift+D on Mac)
+  * Console:
+```r
+devtools::document()
+ℹ Updating newPackage documentation
+ℹ Loading newPackage
+Writing laryngoscope.Rd
+```
+
+# Finalizing your package
+
+## Build & install
+
+- GUI: Build > Check, then Build > Install
+  * The session will restart and load your new package
+
+:::{.fragment}
+- Console:
+
+```{.r code-line-numbers="1|2|"}
+devtools::check()
+devtools::install(build_vignettes = TRUE)
+# restart the session & load the package
+library(newPackage)
+```
+:::
+
+:::{.fragment}
+- Navigate to Packages & search for "newPackage"
+:::
+:::{.fragment}
+- Click `laryngoscope` link to view updated dataset documentation:
+  * The documentation renders with formatted Markdown tables to neatly describe the data set structure
+:::
+
+
+## Write documentation
+
+<div style="text-align: center;">
+  <video class="autoFullscreenVideo" style="width: 80vw; max-width: 800px; aspect-ratio: 21/9; position: absolute; bottom: 20%; left: 10%;" controls>
+    <source src="../snagit/write-man.mp4" type="video/mp4">
+    Write documentation
+  </video>
+</div>
+
+
+# What about saving your presentations?
+
+
+## Creating slides with rUM
+
+:::{.fragment}
++ If you are using slides within your own package
+:::
+:::{.fragment}
+  - Adding slides to `inst` using {rUM}
+```{.r code-line-numbers="1,2|"}
+# add one slide
+rUM::write_slides("rUM", path = "inst")
+# add multiple slides
+rUM::write_slides(c("one", "two"), path = "inst")
+```
+:::
+:::{.fragment}
+  - Rebuild the package
+:::
+
+
+## Create a RevealJS slideshow with the RMed template
+```r
+rUM::write_slides("rUM", template = "rmed2025")
+```
+:::{.incremental}
++ Creates a new `slides` directory with:
+  - `img` directory containing custom design features
+    * RMed hex logos
+    * RMed color schemes
+  - File for rendering code cells with the default RStudio light theme
+  - `slides.scss` for futher customizations
++ Modify the title & author details
++ Complete the URL (line 25) if you are sharing the slideshow or comment out
+:::
+
+
+## Create slides
+<div style="text-align: center;">
+  <video class="autoFullscreenVideo" style="width: 80vw; max-width: 800px; aspect-ratio: 21/9; position: absolute; bottom: 20%; left: 10%;" controls>
+    <source src="../snagit/write-slides.mp4" type="video/mp4">
+    Write slides
+  </video>
+</div>
+
+
+## TL;DR: Creating slides quickly
+
++ Add new slide sections with a level one header (ie, use one #):
+```r
+# New section
+```
++ Add a new slide with a level two header (ie, use two #):
+```r
+## Another slide
+```
++ Explore more slide options: [Quarto Revealjs docs](https://quarto.org/docs/presentations/revealjs/)
++ Emil Hveifeldt ["Slidecraft: The Art of Creating Pretty Presentations"](https://www.youtube.com/watch?v=SAi8-P49F2Y)
+  - Presented at the 2023 New York R Conference (July 13, 2023)
+  - Emil's Slidecraft blog is [here](https://emilhvitfeldt.com/blog)
+
+
+# New features with {rUM} v.2.2.0 "Rum Runner"
+
+## Collaborative communication in mind 🧠 {.center}
+
+##
++ Add a progress notes file to an existing project
+  - Will not overwrite an existing `dated_progress_notes.md` by accident
+```r
+rUM::write_notes()
+```
+
+:::{.fragment}
++ Update `dated_progress_notes.md` to keep track of project updates
+:::
+
+
+## 
++ Add a README template to an existing project
+```{.r code-line-numbers="1|"}
+> rUM::write_readme()
+A README.md has been found in the specified directory! Would you like to overwite with rUM's README?
+
+1: I agree
+2: Absolutely not
+3: Nope
+```
+:::{.fragment}
++ Update `README.md`:
+  - Template was structured with academic & medical package-sharing in mind
+  - Directions for other cloning the repository & how to create a reproducible environment based on your work
+  - Best practices for further documenting project data files, scripts, and directory descriptions
+:::
+
+
+## 
++ Add a {rUM}-style Quarto template file to an existing project
+  - This will create the file and open it in your editor
+```{.r code-line-numbers="1|"}
+rUM::write_quarto("data_cleaning")
+# Add the Quarto file to directory
+rUM::write_quarto("data_cleaning", path = "R")
+```
+
+## 
++ Add SCSS file to existing project & get links to more information on how to use SCSS
+  - The file is added to the project root (`here::here()`)
+
+:::{.fragment}
+```{.r code-line-numbers="1|1,2|"}
+rUM::write_scss()
+✔ Created custom.scss
+# Use a custom SCSS file name
+rUM::write_scss("my_custom")
+✔ Created my_custom.scss
+For more SCSS styling options, visit:
+- https://quarto.org/docs/output-formats/html-themes.html#customizing-themes
+- https://quarto.org/docs/output-formats/html-themes-more.html
+- https://github.com/twbs/bootstrap/blob/main/scss/_variables.scss
+```
+:::
+
+
+## New {rUM} projects will
+
+- Include these functions automatically:
+  * `write_quarto()`
+  * `write_scss()`
+  * `write_readme()`
+  * `write_notes()`
+
+
+## What's new in {rUM}
+<div style="text-align: center;">
+  <video class="autoFullscreenVideo" style="width: 80vw; max-width: 800px; aspect-ratio: 21/9; position: absolute; bottom: 20%; left: 10%;" controls>
+    <source src="../snagit/whats-new-in-rUM.mp4" type="video/mp4">
+    What's new in rUM
+  </video>
+</div>
+
+
+## Proposing a solution
+:::{.incremental}
++ We would like offer a new convention for adding slideshows to a package
+  - Creating `inst/slides` so that users can find & display slides
+  - Similar functionality to using vignettes, but reusable for presentations
+:::
+
+
+##
++ Find the names of the slideshows available in packages
+  - The package author needs to have added them to `inst/slides` first
+  - If you haven't, move your `slides` folder inside `inst`
+    * rebuild the package
+    * restart your session
+
+##
+What slideshows are available in package {newPackage}?
+```r
+> rUM::find_slides("newPackage")
+[1] "rUM"
+```
+:::{.fragment}
+Let's view "rUM" slideshow
+```{.r code-line-numbers="1|"}
+rUM::show_slides(package = "newPackage", deck = "rUM")
+# or pipe from find to show
+rUM::find_slides("newPackage") |> rUM::show_slides(package = "newPackage")
+```
+:::
+
+
+## Find & show slides
+<div style="text-align: center;">
+  <video class="autoFullscreenVideo" style="width: 80vw; max-width: 800px; aspect-ratio: 21/9; position: absolute; bottom: 20%; left: 10%;" controls>
+    <source src="../snagit/find-show-slides.mp4" type="video/mp4">
+    Find & show slides
+  </video>
+</div>
+
+
+## Functions
+
++ [`make_package()`](https://raymondbalise.github.io/rUM/reference/make_package.html){target='_blank'}
++ [`make_project()`](https://raymondbalise.github.io/rUM/reference/make_project.html){target='_blank'}
++ Supporting functions
+  + [`write_notes()`](https://raymondbalise.github.io/rUM/reference/write_notes.html){target='_blank'}
+  + [`write_quarto()`](https://raymondbalise.github.io/rUM/reference/write_quarto.html){target='_blank'}
+  + [`write_readme()`](https://raymondbalise.github.io/rUM/reference/write_readme.html){target='_blank'}
+  + [`write_scss()`](https://raymondbalise.github.io/rUM/reference/write_scss.html){target='_blank'}
+  + [`write_slides()`](https://raymondbalise.github.io/rUM/reference/write_slides.html){target='_blank'}
+  + [`write_man()`](https://raymondbalise.github.io/rUM/reference/write_man.html){target='_blank'}
+
+
+## THANK YOU! 😄
+
+:::{.absolute bottom="15%" left="-8%"}
+<span style="font-size: 50px;"><strong>Kyle Grealis, MS</strong></span>
+
+**LinkedIn**: https://www.linkedin.com/in/kyle-grealis-044030180/
+
+**Email**: kyleGrealis@icloud.com
+
+**Blog**: https://azimuth-project.tech/
+
+<br><br>
+<span style="font-size: 50px;"><strong>Raymond Balise, PhD</strong></span>
+
+**Email**: balise@miami.edu
+:::
+
+
+
+![](../snagit/kyle.jpg){.styled-image .absolute bottom="40%" right="0%" height="auto" width="200"}
+
+
+## Complete Walk-through
+
+<div style="text-align: center;">
+  <video class="autoFullscreenVideo" style="width: 80vw; max-width: 800px; aspect-ratio: 21/9; position: absolute; bottom: 20%; left: 10%;" controls>
+    <source src="../snagit/full-rUM-demo.mp4" type="video/mp4">
+    Full walkthrough demonstration
+  </video>
+</div>
+
