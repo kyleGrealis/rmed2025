@@ -114,11 +114,7 @@ A R package from your friends at the University of Miami
 
 ## Reproducibility crisis
 
-:::{.fragment}
-Do you see different results when you try to repeat the results from a paper using a new, independent sample?
-
-  - What could possibly go wrong?
-:::
+Do you see different results when you try to repeat the methods of a published manuscript using a new, independent sample?
 
 :::{.fragment .fade-in}
 Can you repeat the analyses in a published paper if you are given the data?
@@ -142,6 +138,23 @@ Can you repeat the analyses from your own paper with the original data?
 :::{.fragment}
 + [Just add science!]{.orange}
 :::
+
+
+## What tools does rUM provide to solve the reproducibility crisis?
+
+:::{ .fragment }
++ `make_package()`
+  - A research paper shell as a vignette
+  - All files & directories needed to build a package
+  - Other supporting files (i.e., `.gitignore`)
+:::
+
+:::{ .fragment }
++ `make_project()`
+  - A research paper shell
+  - Other supporting files (i.e., `.gitignore`)
+:::
+
 
 
 # Creating packages with {rUM}
@@ -664,13 +677,6 @@ For more SCSS styling options, visit:
 
 
 ##
-+ Find the names of the slideshows available in packages
-  - The package author needs to have added them to `inst/slides` first
-  - If you haven't, move your `slides` folder inside `inst`
-    * rebuild the package
-    * restart your session
-
-##
 What slideshows are available in package {newPackage}?
 ```r
 > rUM::find_slides("newPackage")
@@ -710,7 +716,7 @@ rUM::find_slides("newPackage") |> rUM::show_slides(package = "newPackage")
 
 ## THANK YOU! 😄
 
-:::{.absolute bottom="15%" left="-8%"}
+:::{.absolute bottom="16%" left="-8%"}
 <span style="font-size: 50px;"><strong>Kyle Grealis, MS</strong></span>
 
 **LinkedIn**: https://www.linkedin.com/in/kyle-grealis-044030180/
@@ -719,7 +725,7 @@ rUM::find_slides("newPackage") |> rUM::show_slides(package = "newPackage")
 
 **Blog**: https://azimuth-project.tech/
 
-<br><br>
+<br><br><br>
 <span style="font-size: 50px;"><strong>Raymond Balise, PhD</strong></span>
 
 **Email**: balise@miami.edu
@@ -727,7 +733,8 @@ rUM::find_slides("newPackage") |> rUM::show_slides(package = "newPackage")
 
 
 
-![](../snagit/kyle.jpg){.styled-image .absolute bottom="40%" right="0%" height="auto" width="200"}
+![](../snagit/kyle.jpg){.styled-image .absolute bottom="45%" right="1%" height="auto" width="190"}
+![](../snagit/ray.jpg){.styled-image .absolute bottom="2%" right="0%" height="auto" width="200"}
 
 
 ## Complete Walk-through
